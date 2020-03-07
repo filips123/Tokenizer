@@ -25,6 +25,9 @@ cflags = ["-std=c++11", "-fvisibility=hidden"]
 if sys.platform == 'darwin':
     cflags.append('-mmacosx-version-min=10.9')
 
+with open("README.md") as file:
+    readme = file.read()
+
 tokenizer_module = Extension(
     "pyonmttok",
     sources=["Python.cc"],
@@ -38,6 +41,7 @@ setup(
     version="1.18.2",
     license="MIT",
     description="OpenNMT tokenization library",
+    long_description=readme,
     author="OpenNMT",
     author_email="guillaume.klein@systrangroup.com",
     url="http://opennmt.net",

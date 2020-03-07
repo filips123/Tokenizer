@@ -1,4 +1,8 @@
-# Python bindings
+# Python bindings for Tokenizer
+
+Tokenizer is a fast, generic, and customizable text tokenization library for C++ and Python with minimal dependencies.
+
+## Installation
 
 ```bash
 pip install pyonmttok
@@ -48,7 +52,7 @@ tokenizer.tokenize_file(input_path: str, output_path: str, num_threads=1)
 tokenizer.detokenize_file(input_path: str, output_path: str)
 ```
 
-See the [documentation](../../docs/options.md) for a description of each option.
+See the [documentation](https://github.com/OpenNMT/Tokenizer/blob/master/docs/options.md) for a description of each option.
 
 ## Subword learning
 
