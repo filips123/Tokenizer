@@ -37,7 +37,8 @@ jobs:
 
     - name: Build and test wheels
       run: |
-        python -m pip install cibuildwheel==1.2.0
+        # Switch to cibuildwheel from PyPI after https://github.com/joerick/cibuildwheel/pull/295 is merged
+        python -m pip install https://github.com/filips123/cibuildwheel/archive/2702767a17efa0bee3ac90b1f6b8561e01eb1538.zip
         python -m cibuildwheel . bindings/python --output-dir bindings/python/dist
 
     - name: Publish sdist and wheels
