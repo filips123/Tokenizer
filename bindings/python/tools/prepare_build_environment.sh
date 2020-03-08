@@ -12,7 +12,7 @@ PYBIND11_VERSION=${PYBIND11_VERSION:-2.4.3}
 pip install pybind11==$PYBIND11_VERSION
 
 # Install CMake
-pip install "cmake==3.13.*"
+pip install "cmake==3.16.*"
 
 # Skip double installation of libraries
 if [ -f built-$PYTHON_ARCH ]; then exit 0; fi
