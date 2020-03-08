@@ -1,0 +1,71 @@
+name: C++ API
+on: [push, pull_request]
+
+env:
+  GOOGLETEST_VERSION: 1.8.0
+  SENTENCEPIECE_VERSION: 0.1.8
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        icu: [ON, OFF]
+    env:
+      WITH_ICU: ${{ matrix.icu }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Cache GoogleTest
+      id: googletest-cache
+      uses: actions/cache@v1
+      with:
+        path: ~/googletest-${{ env.GOOGLETEST_VERSION }}
+        key: ${{ runner.os }}-googletest-${{ env.GOOGLETEST_VERSION }}
+
+    - name: Install GoogleTest
+      if: steps.googletest-cache.outputs.cache-hit != 'true'
+      run: |
+        wget https://github.com/google/googletest/archive/release-$GOOGLETEST_VERSION.tar.gz
+        tar xf release-$GOOGLETEST_VERSION.tar.gz
+        cd googletest-release-$GOOGLETEST_VERSION/
+        mkdir install
+        mkdir build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX=$HOME/googletest-$GOOGLETEST_VERSION/ ..
+        make && make install
+        cd $GITHUB_WORKSPACE
+
+    - name: Cache SentencePiece
+      id: sentencepiece-cache
+      uses: actions/cache@v1
+      with:
+        path: ~/sentencepiece-${{ env.SENTENCEPIECE_VERSION }}
+        key: ${{ runner.os }}-sentencepiece-${{ env.SENTENCEPIECE_VERSION }}
+
+    - name: Install SentencePiece
+      if: steps.sentencepiece-cache.outputs.cache-hit != 'true'
+      run: |
+        wget https://github.com/google/sentencepiece/archive/v$SENTENCEPIECE_VERSION.tar.gz
+        tar xf v$SENTENCEPIECE_VERSION.tar.gz
+        cd sentencepiece-$SENTENCEPIECE_VERSION
+        mkdir install
+        mkdir build; cd build
+        cmake -DCMAKE_INSTALL_PREFIX=$HOME/sentencepiece-$SENTENCEPIECE_VERSION ..
+        make
+        make install
+        cd $GITHUB_WORKSPACE
+
+    - name: Install Tokenizer
+      run: |
+        export TOKENIZER_ROOT=$HOME/Tokenizer
+        export SENTENCEPIECE_ROOT=$HOME/sentencepiece-$SENTENCEPIECE_VERSION
+        mkdir build; cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$TOKENIZER_ROOT -DCMAKE_PREFIX_PATH=$SENTENCEPIECE_ROOT -DGTEST_ROOT=$HOME/googletest-$GOOGLETEST_VERSION -DWITH_ICU=$WITH_ICU ..
+        make install
+        cd $GITHUB_WORKSPACE
+
+    - name: Test Tokenizer
+      run: |
+        build/test/onmt_tokenizer_test test/data
