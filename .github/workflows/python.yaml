@@ -24,22 +24,23 @@ jobs:
       with:
         python-version: 3.7
 
-    - name: Install cibuildwheel
-      run: |
-        python -m pip install cibuildwheel==1.2.0
-
     - name: Install Visual C++ for Python 2.7
       if: startsWith(matrix.os, 'windows')
       run: |
         choco install vcpython27 -f -y
 
-    - name: Build and test wheel
+    - name: Build sdist
+      if: startsWith(matrix.os, 'linux')
       run: |
-        cd bindings/python
-        python setup.py sdist --dist-dir dist
-        python -m cibuildwheel --output-dir dist
+        python -m pip install pybind11==2.4.3
+        python setup.py bindings/python/sdist --dist-dir bindings/python/dist
 
-    - name: Publish wheels
+    - name: Build and test wheels
+      run: |
+        python -m pip install cibuildwheel==1.2.0
+        python -m cibuildwheel . bindings/python --output-dir bindings/python/dist
+
+    - name: Publish sdist and wheels
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
