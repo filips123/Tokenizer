@@ -22,7 +22,7 @@ touch built-$PYTHON_ARCH
 curl -L -O https://github.com/unicode-org/icu/releases/download/release-${ICU_VERSION/./-}/icu4c-${ICU_VERSION/./_}-src.tgz
 tar xf icu4c-*-src.tgz
 cd icu/source
-if [ "$RUNNER_OS" == "Windows" ]; then PYTHON_BACKUP=$PYTHON; unset PYTHON; fi
+if [ "$RUNNER_OS" == "Windows" ]; then PYTHON_BACKUP=$PYTHON; PYTHON="echo Skipping"; fi
 CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --disable-shared --enable-static
 if [ "$RUNNER_OS" == "Windows" ]; then PYTHON=$PYTHON_BACKUP; unset PYTHON_BACKUP; fi
 make -j2 install
