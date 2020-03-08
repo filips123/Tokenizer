@@ -11,12 +11,15 @@ PYBIND11_VERSION=${PYBIND11_VERSION:-2.4.3}
 # Install pybind11
 pip install pybind11==$PYBIND11_VERSION
 
-# Install CMake
-pip install "cmake==3.16.*" || pip install "cmake==3.13.*"
+# Install CMake on Windows and macOS
+if [[ -z "${RUNNER_OS}" ]]; then pip install "cmake==3.13.*" || pip install "cmake==3.16.*"; fi
 
 # Skip double installation of libraries
 if [ -f built-$PYTHON_ARCH ]; then exit 0; fi
 touch built-$PYTHON_ARCH
+
+# Install CMake on manylinux
+if [[ ! -z "${RUNNER_OS}" ]]; then /opt/python/cp37-cp37m/bin/pip install "cmake==3.13.*" && cp /opt/python/cp37-cp37m/bin/cmake /usr/bin; fi
 
 # Install ICU
 curl -L -O https://github.com/unicode-org/icu/releases/download/release-${ICU_VERSION/./-}/icu4c-${ICU_VERSION/./_}-src.tgz
