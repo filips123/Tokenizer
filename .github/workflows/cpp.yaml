@@ -9,6 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         icu: [ON, OFF]
     env:
@@ -56,6 +57,10 @@ jobs:
         make
         make install
         cd $GITHUB_WORKSPACE
+
+    - name: Install APT dependencies
+      run: |
+        sudo apt install -y build-essential cmake libboost-program-options-dev libicu-dev
 
     - name: Install Tokenizer
       run: |
