@@ -5,6 +5,7 @@ env:
   CIBW_BEFORE_BUILD: bash {project}/bindings/python/tools/prepare_build_environment.sh
   CIBW_TEST_COMMAND: pytest {project}/bindings/python/test/test.py
   CIBW_TEST_REQUIRES: pytest
+  CIBW_SKIP: pp*
   CI: true
 
 jobs:
