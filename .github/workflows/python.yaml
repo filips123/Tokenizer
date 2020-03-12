@@ -9,7 +9,8 @@ env:
   CI: true
 
 jobs:
-  test:
+  build:
+    name: Building and testing on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -42,10 +43,27 @@ jobs:
         python -m pip install https://github.com/filips123/cibuildwheel/archive/2702767a17efa0bee3ac90b1f6b8561e01eb1538.zip
         python -m cibuildwheel . bindings/python --output-dir bindings/python/dist
 
-    - name: Publish sdist and wheels
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    - name: Upload artifacts to storage
+      uses: actions/upload-artifact@v1
+        with:
+          name: wheels
+          path: bindings/python/dist
+
+  publish:
+    name: Publishing package to PyPI
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    needs: [build]
+
+    - name: Download artifacts from storage
+      uses: actions/download-artifact@v1
+      with:
+        name: wheels
+        path: dist
+
+    - name: Publish artifacts to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
-        packages_dir: bindings/python/dist/
+        packages_dir: dist
