@@ -6,7 +6,8 @@ env:
   SENTENCEPIECE_VERSION: 0.1.8
 
 jobs:
-  test:
+  build:
+     name: Building and testing with ICU ${{ matrix.icu }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
