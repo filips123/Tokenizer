@@ -45,9 +45,9 @@ jobs:
 
     - name: Upload artifacts to storage
       uses: actions/upload-artifact@v1
-        with:
-          name: wheels
-          path: bindings/python/dist
+      with:
+        name: wheels
+        path: bindings/python/dist
 
   publish:
     name: Publishing package to PyPI

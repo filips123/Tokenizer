@@ -7,7 +7,7 @@ env:
 
 jobs:
   build:
-     name: Building and testing with ICU ${{ matrix.icu }}
+    name: Building and testing with ICU ${{ matrix.icu }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
