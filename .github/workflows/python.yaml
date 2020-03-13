@@ -55,6 +55,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     needs: [build]
 
+    steps:
     - name: Download artifacts from storage
       uses: actions/download-artifact@v1
       with:
