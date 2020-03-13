@@ -40,12 +40,9 @@ if [[ "${RUNNER_OS}" == "Windows" ]]; then sed -i '1 i\SHELL := /bin/sh\n' Makef
 make -j2 install
 cd $ROOT_DIR
 
-# Set TOKENIZER_ROOT for macOS
-if [[ "${RUNNER_OS}" == "macOS" ]]; then TOKENIZER_ROOT=$ROOT_DIR/install; fi
-
 # Build Tokenizer
 mkdir build; cd build
-cmake -DCMAKE_INSTALL_PREFIX=$TOKENIZER_ROOT -DCMAKE_BUILD_TYPE=Release -DLIB_ONLY=ON -DWITH_ICU=ON ..
+cmake -DCMAKE_BUILD_TYPE=Release -DLIB_ONLY=ON -DWITH_ICU=ON ..
 if [[ "${RUNNER_OS}" == "Windows" ]]; then sed -i '1 i\SHELL := /bin/sh\n' Makefile; fi
 make -j2 install
 cd $ROOT_DIR
